@@ -12,4 +12,13 @@ const gameBoard = (() => {
   };
 })();
 
+const player = (name, marker) => {
+  return {
+    name,
+    marker
+  };
+}
+
+const aaron = player('Aaron', 'X');
+console.log(aaron.name, aaron.marker);
 console.log(gameBoard.grid);
