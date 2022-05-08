@@ -1,3 +1,16 @@
+:root {
+  --game-board-width: 50vh;
+}
+
 p {
   font-weight: bold;
+}
+
+.game-board-container {
+  margin: 0 auto;
+  width: var(--game-board-width);
+  height: var(--game-board-width);
+
+  display: grid;
+  grid-template: repeat(3, 1fr) / repeat(3, 1fr);
 }
