@@ -2,9 +2,9 @@ console.log('Hello world🌊');
 
 const gameBoard = (() => {
   const grid = [
-    ['', '', ''],
-    ['', '', ''],
-    ['', '', ''],
+    'A', 'T', '',
+    '',  '',  '',
+    '',  '',  '',
   ];
 
   return {
@@ -52,6 +52,38 @@ const gameplayController = (function(board, players) {
     switchTurns,
   };
 })(gameBoard, playerList);
+
+/*
+  Takes in a one-dimensional list of markers on each gameboard grid cell.
+
+  e.g.
+  ['X', 'O', '', '', '', '', '', 'X', 'O']
+    0    1   2   3   4   5   6    7    8
+
+  is equivalent to...
+
+    X | O |
+  -------------
+      |   |
+  -------------
+      | X | O
+*/
+const displayController = function(gameBoard) {
+  const render = function() {
+    const rootContainer = document.querySelector('#game-board');
+    const cells = [...rootContainer.children];
+
+    cells.forEach((cell, index) => {
+      cell.textContent = gameBoard[index];
+    })
+  };
+
+  return {
+    render
+  };
+};
+
+const cc = displayController(gameBoard.grid).render();
 
 // console.log(gameplayController.board);
 // console.log(gameplayController.getActivePlayer());
