@@ -15,9 +15,14 @@ const gameBoard = (() => {
 
   const isCellTaken = function(cellIndex) {
     return grid[cellIndex] !== emptyCell;
-  }
+  };
+
+  const markerAt = function(cellIndex) {
+    return grid[cellIndex];
+  };
 
   return {
+    markerAt,
     placeMarkerAt,
     isCellTaken,
     grid
@@ -57,12 +62,39 @@ const gameplayController = (function(board, players) {
     activePlayer = getNextPlayer();
   };
 
+  const winningCellCombinations = [
+    // Horizontal
+    [0, 1, 2],
+    [3, 4, 5],
+    [6, 7, 8],
+
+    // Vertical
+    [0, 3, 6],
+    [1, 4, 7],
+    [2, 5, 8],
+
+    // Diagonal
+    [0, 4, 8],
+    [2, 4, 6]
+  ];
+
+  const isGameOver = function() {
+    return winningCellCombinations.some(comboIndexes => {
+      return comboIndexes.every(index => {
+        return board.markerAt(index) === activePlayer.marker;
+      });
+    });
+  };
+
   const playTurn = function(cellIndex) {
     // Don't allow playing a turn on a cell that's already been played on.
     if (board.isCellTaken(cellIndex)) return;
 
     const marker = activePlayer.marker;
     board.placeMarkerAt(marker, cellIndex);
+    console.log(
+      isGameOver()
+    );
     switchTurns();
   };
 
