@@ -78,12 +78,18 @@ const gameplayController = (function(board, players) {
     [2, 4, 6]
   ];
 
-  const isGameOver = function() {
+  const isWin = function() {
     return winningCellCombinations.some(comboIndexes => {
       return comboIndexes.every(index => {
         return board.markerAt(index) === activePlayer.marker;
       });
     });
+  };
+
+  const isGameOver = function() {
+    if (isWin()) return true;
+
+    return false;
   };
 
   const playTurn = function(cellIndex) {
