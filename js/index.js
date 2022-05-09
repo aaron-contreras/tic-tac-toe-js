@@ -31,6 +31,7 @@ const gameBoard = (() => {
     markerAt,
     placeMarkerAt,
     isCellTaken,
+    isFull,
     grid
   };
 })();
@@ -102,20 +103,51 @@ const gameplayController = (function(board, players) {
     return false;
   };
 
+  const gameStates = {
+    playing: 'playing',
+    tie: 'tie',
+    win: 'win'
+  };
+
+  let gameStatus = gameStates['playing'];
+
+  const getGameStatus = function() {
+    return gameStatus;
+  }
+
+  const isGameStatePlaying = function() {
+    return gameStatus === gameStates['playing'];
+  };
+
+  const updateGameStatus = function() {
+    if (isTie()) {
+      gameStatus = gameStates['tie'];
+      return;
+    }
+
+    gameStatus = gameStates['win'];
+  }
+
   const playTurn = function(cellIndex) {
     // Don't allow playing a turn on a cell that's already been played on.
     if (board.isCellTaken(cellIndex)) return;
 
     const marker = activePlayer.marker;
     board.placeMarkerAt(marker, cellIndex);
-    console.log(
-      isGameOver()
-    );
+
+    // Set the game over state to gameStatus and ends the turn playing.
+    if (isGameOver()) {
+      updateGameStatus();
+      return;
+    }
+
     switchTurns();
   };
 
   return {
     board,
+    getGameStatus,
+    isGameStatePlaying,
     getActivePlayer,
     getNextPlayer,
     playTurn,
@@ -144,7 +176,7 @@ const displayController = function(gameBoard) {
 
     cells.forEach((cell, index) => {
       cell.textContent = gameBoard[index];
-    })
+    });
   };
 
   const markCellAsPlayed = function(cellIndex) {
@@ -154,11 +186,27 @@ const displayController = function(gameBoard) {
     cells[cellIndex].setAttribute('disabled', true);
   };
 
+  const updateGameStatus = function() {
+    const gameStatusElement = document.querySelector('#game-status');
+    gameStatusElement.textContent = gameplayController.getGameStatus();
+  };
+
+  const disableBoard = function() {
+    if (gameplayController.isGameStatePlaying()) return;
+
+    const rootContainer = document.querySelector('#game-board');
+    const cells = [...rootContainer.children];
+
+    cells.forEach((cell, cellIndex) => markCellAsPlayed(cellIndex));
+  };
+
   const playTurn = function(cellIndex) {
     gameplayController.playTurn(cellIndex);
-    render();
     markCellAsPlayed(cellIndex);
-  }
+    render();
+    updateGameStatus();
+    disableBoard();
+  };
 
   // IIFE to generate event listeners only once at time of initial load.
   const tieCellsToClickActions = (function() {
