@@ -53,23 +53,7 @@ const gameplayController = (function(board, players) {
   // Player one starts off the game
   let activePlayer = players[0]; 
 
-  const getActivePlayer = function() {
-    return activePlayer;
-  };
-
-  const getNextPlayer = () => {
-    if (activePlayer === players[0]) {
-      return players[1];
-    }
-
-    return players[0];
-  };
-
-  const switchTurns = function() {
-    activePlayer = getNextPlayer();
-  };
-
-  const winningCellCombinations = [
+  const _winningCellCombinations = [
     // Horizontal
     [0, 1, 2],
     [3, 4, 5],
@@ -85,12 +69,36 @@ const gameplayController = (function(board, players) {
     [2, 4, 6]
   ];
 
+  const _gameStates = {
+    playing: 'playing',
+    tie: 'tie',
+    win: 'win'
+  };
+
+  let gameStatus = _gameStates['playing'];
+
+  const getActivePlayer = function() {
+    return activePlayer;
+  };
+
+  const _getNextPlayer = () => {
+    if (activePlayer === players[0]) {
+      return players[1];
+    }
+
+    return players[0];
+  };
+
+  const _switchTurns = function() {
+    activePlayer = _getNextPlayer();
+  };
+
   const isTie = function() {
     return board.isFull();
   };
 
   const isWin = function() {
-    return winningCellCombinations.some(comboIndexes => {
+    return _winningCellCombinations.some(comboIndexes => {
       return comboIndexes.every(index => {
         return board.markerAt(index) === activePlayer.marker;
       });
@@ -103,29 +111,21 @@ const gameplayController = (function(board, players) {
     return false;
   };
 
-  const gameStates = {
-    playing: 'playing',
-    tie: 'tie',
-    win: 'win'
-  };
-
-  let gameStatus = gameStates['playing'];
-
   const getGameStatus = function() {
     return gameStatus;
   }
 
   const isGameStatePlaying = function() {
-    return gameStatus === gameStates['playing'];
+    return gameStatus === _gameStates['playing'];
   };
 
-  const updateGameStatus = function() {
+  const _updateGameStatus = function() {
     if (isTie()) {
-      gameStatus = gameStates['tie'];
+      gameStatus = _gameStates['tie'];
       return;
     }
 
-    gameStatus = gameStates['win'];
+    gameStatus = _gameStates['win'];
   }
 
   const playTurn = function(cellIndex) {
@@ -137,11 +137,11 @@ const gameplayController = (function(board, players) {
 
     // Set the game over state to gameStatus and ends the turn playing.
     if (isGameOver()) {
-      updateGameStatus();
+      _updateGameStatus();
       return;
     }
 
-    switchTurns();
+    _switchTurns();
   };
 
   return {
@@ -149,7 +149,6 @@ const gameplayController = (function(board, players) {
     getGameStatus,
     isGameStatePlaying,
     getActivePlayer,
-    getNextPlayer,
     playTurn,
   };
 })(gameBoard, playerList);
