@@ -1,13 +1,25 @@
 console.log('Hello world🌊');
 
 const gameBoard = (() => {
+  const emptyCell = ' ';
+
   const grid = [
-    'A', 'T', '',
-    '',  '',  '',
-    '',  '',  '',
+    emptyCell, emptyCell, emptyCell,
+    emptyCell, emptyCell, emptyCell,
+    emptyCell, emptyCell, emptyCell,
   ];
 
+  const placeMarkerAt = function(marker, cellIndex) {
+    grid[cellIndex] = marker;
+  };
+
+  const isCellTaken = function(cellIndex) {
+    return grid[cellIndex] !== emptyCell;
+  }
+
   return {
+    placeMarkerAt,
+    isCellTaken,
     grid
   };
 })();
@@ -43,13 +55,22 @@ const gameplayController = (function(board, players) {
 
   const switchTurns = function() {
     activePlayer = getNextPlayer();
-  }
+  };
+
+  const playTurn = function(cellIndex) {
+    // Don't allow playing a turn on a cell that's already been played on.
+    if (board.isCellTaken(cellIndex)) return;
+
+    const marker = activePlayer.marker;
+    board.placeMarkerAt(marker, cellIndex);
+    switchTurns();
+  };
 
   return {
     board,
     getActivePlayer,
     getNextPlayer,
-    switchTurns,
+    playTurn,
   };
 })(gameBoard, playerList);
 
@@ -57,8 +78,8 @@ const gameplayController = (function(board, players) {
   Takes in a one-dimensional list of markers on each gameboard grid cell.
 
   e.g.
-  ['X', 'O', '', '', '', '', '', 'X', 'O']
-    0    1   2   3   4   5   6    7    8
+  ['X', 'O', ' ', ' ', ' ', ' ', ' ', 'X', 'O']
+    0    1    2    3    4    5    6    7    8
 
   is equivalent to...
 
@@ -78,12 +99,36 @@ const displayController = function(gameBoard) {
     })
   };
 
+  const markCellAsPlayed = function(cellIndex) {
+    const rootContainer = document.querySelector('#game-board');
+    const cells = [...rootContainer.children];
+    
+    cells[cellIndex].setAttribute('disabled', true);
+  };
+
+  const playTurn = function(cellIndex) {
+    gameplayController.playTurn(cellIndex);
+    render();
+    markCellAsPlayed(cellIndex);
+  }
+
+  // IIFE to generate event listeners only once at time of initial load.
+  const tieCellsToClickActions = (function() {
+    const rootContainer = document.querySelector('#game-board');
+    const cells = [...rootContainer.children];
+
+    cells.forEach((cell, index) => {
+      cell.addEventListener('click', playTurn.bind(this, index));
+    });
+  })();
+
   return {
     render
   };
 };
 
-const cc = displayController(gameBoard.grid).render();
+const cc = displayController(gameplayController.board.grid);
+cc.render();
 
 // console.log(gameplayController.board);
 // console.log(gameplayController.getActivePlayer());
