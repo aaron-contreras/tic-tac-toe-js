@@ -166,55 +166,55 @@ const gameplayController = (function(board, players) {
   };
 })(gameBoard, playerList);
 
-
 const displayController = function(gameplayController) {
-  const gameBoard = gameplayController.board;
+  const _gameBoard = gameplayController.board;
+
+  const _getCells = function() {
+    const rootContainer = document.querySelector('#game-board');
+    return [...rootContainer.children];
+  }
 
   const render = function() {
-    const rootContainer = document.querySelector('#game-board');
-    const cells = [...rootContainer.children];
+    const cells = _getCells();
 
     cells.forEach((cell, cellIndex) => {
-      cell.textContent = gameBoard.markerAt(cellIndex);
+      cell.textContent = _gameBoard.markerAt(cellIndex);
     });
   };
 
-  const markCellAsPlayed = function(cellIndex) {
-    const rootContainer = document.querySelector('#game-board');
-    const cells = [...rootContainer.children];
+  const _markCellAsPlayed = function(cellIndex) {
+    const cells = _getCells(); 
     
     cells[cellIndex].setAttribute('disabled', true);
   };
 
-  const updateGameStatus = function() {
+  const _updateGameStatus = function() {
     const gameStatusElement = document.querySelector('#game-status');
     gameStatusElement.textContent = gameplayController.getGameStatus();
   };
 
-  const disableBoard = function() {
+  const _disableBoard = function() {
     if (gameplayController.isGameStatePlaying()) return;
 
-    const rootContainer = document.querySelector('#game-board');
-    const cells = [...rootContainer.children];
+    const cells = _getCells(); 
 
-    cells.forEach((cell, cellIndex) => markCellAsPlayed(cellIndex));
+    cells.forEach((cell, cellIndex) => _markCellAsPlayed(cellIndex));
   };
 
-  const playTurn = function(cellIndex) {
+  const _playTurn = function(cellIndex) {
     gameplayController.playTurn(cellIndex);
-    markCellAsPlayed(cellIndex);
+    _markCellAsPlayed(cellIndex);
     render();
-    updateGameStatus();
-    disableBoard();
+    _updateGameStatus();
+    _disableBoard();
   };
 
   // IIFE to generate event listeners only once at time of initial load.
-  const tieCellsToClickActions = (function() {
-    const rootContainer = document.querySelector('#game-board');
-    const cells = [...rootContainer.children];
+  const _tieCellsToClickActions = (function() {
+    const cells = _getCells(); 
 
     cells.forEach((cell, index) => {
-      cell.addEventListener('click', playTurn.bind(this, index));
+      cell.addEventListener('click', _playTurn.bind(this, index));
     });
   })();
 
