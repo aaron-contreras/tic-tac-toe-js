@@ -21,6 +21,12 @@ const gameBoard = (() => {
     return grid[cellIndex];
   };
 
+  const isFull = function() {
+    return !grid.some(cell => {
+      return cell === emptyCell;
+    });
+  }
+
   return {
     markerAt,
     placeMarkerAt,
@@ -78,6 +84,10 @@ const gameplayController = (function(board, players) {
     [2, 4, 6]
   ];
 
+  const isTie = function() {
+    return board.isFull();
+  };
+
   const isWin = function() {
     return winningCellCombinations.some(comboIndexes => {
       return comboIndexes.every(index => {
@@ -87,7 +97,7 @@ const gameplayController = (function(board, players) {
   };
 
   const isGameOver = function() {
-    if (isWin()) return true;
+    if (isTie() || isWin()) return true;
 
     return false;
   };
