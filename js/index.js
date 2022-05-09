@@ -1,29 +1,43 @@
 console.log('Hello world🌊');
 
 const gameBoard = (() => {
-  const emptyCell = ' ';
+  const _emptyCell = ' ';
+  /*
+    Holds a one-dimensional list of markers on each gameboard grid cell.
 
-  const grid = [
-    emptyCell, emptyCell, emptyCell,
-    emptyCell, emptyCell, emptyCell,
-    emptyCell, emptyCell, emptyCell,
+    e.g.
+    ['X', 'O', ' ', ' ', ' ', ' ', ' ', 'X', 'O']
+      0    1    2    3    4    5    6    7    8
+
+    is equivalent to...
+
+      X | O |
+    -------------
+        |   |
+    -------------
+        | X | O
+  */
+  const _grid = [
+    _emptyCell, _emptyCell, _emptyCell,
+    _emptyCell, _emptyCell, _emptyCell,
+    _emptyCell, _emptyCell, _emptyCell,
   ];
 
   const placeMarkerAt = function(marker, cellIndex) {
-    grid[cellIndex] = marker;
+    _grid[cellIndex] = marker;
   };
 
   const isCellTaken = function(cellIndex) {
-    return grid[cellIndex] !== emptyCell;
+    return _grid[cellIndex] !== _emptyCell;
   };
 
   const markerAt = function(cellIndex) {
-    return grid[cellIndex];
+    return _grid[cellIndex];
   };
 
   const isFull = function() {
-    return !grid.some(cell => {
-      return cell === emptyCell;
+    return !_grid.some(cell => {
+      return cell === _emptyCell;
     });
   }
 
@@ -32,7 +46,6 @@ const gameBoard = (() => {
     placeMarkerAt,
     isCellTaken,
     isFull,
-    grid
   };
 })();
 
@@ -53,23 +66,7 @@ const gameplayController = (function(board, players) {
   // Player one starts off the game
   let activePlayer = players[0]; 
 
-  const getActivePlayer = function() {
-    return activePlayer;
-  };
-
-  const getNextPlayer = () => {
-    if (activePlayer === players[0]) {
-      return players[1];
-    }
-
-    return players[0];
-  };
-
-  const switchTurns = function() {
-    activePlayer = getNextPlayer();
-  };
-
-  const winningCellCombinations = [
+  const _winningCellCombinations = [
     // Horizontal
     [0, 1, 2],
     [3, 4, 5],
@@ -85,12 +82,36 @@ const gameplayController = (function(board, players) {
     [2, 4, 6]
   ];
 
+  const _gameStates = {
+    playing: 'playing',
+    tie: 'tie',
+    win: 'win'
+  };
+
+  let gameStatus = _gameStates['playing'];
+
+  const getActivePlayer = function() {
+    return activePlayer;
+  };
+
+  const _getNextPlayer = () => {
+    if (activePlayer === players[0]) {
+      return players[1];
+    }
+
+    return players[0];
+  };
+
+  const _switchTurns = function() {
+    activePlayer = _getNextPlayer();
+  };
+
   const isTie = function() {
     return board.isFull();
   };
 
   const isWin = function() {
-    return winningCellCombinations.some(comboIndexes => {
+    return _winningCellCombinations.some(comboIndexes => {
       return comboIndexes.every(index => {
         return board.markerAt(index) === activePlayer.marker;
       });
@@ -103,29 +124,21 @@ const gameplayController = (function(board, players) {
     return false;
   };
 
-  const gameStates = {
-    playing: 'playing',
-    tie: 'tie',
-    win: 'win'
-  };
-
-  let gameStatus = gameStates['playing'];
-
   const getGameStatus = function() {
     return gameStatus;
   }
 
   const isGameStatePlaying = function() {
-    return gameStatus === gameStates['playing'];
+    return gameStatus === _gameStates['playing'];
   };
 
-  const updateGameStatus = function() {
+  const _updateGameStatus = function() {
     if (isTie()) {
-      gameStatus = gameStates['tie'];
+      gameStatus = _gameStates['tie'];
       return;
     }
 
-    gameStatus = gameStates['win'];
+    gameStatus = _gameStates['win'];
   }
 
   const playTurn = function(cellIndex) {
@@ -137,11 +150,11 @@ const gameplayController = (function(board, players) {
 
     // Set the game over state to gameStatus and ends the turn playing.
     if (isGameOver()) {
-      updateGameStatus();
+      _updateGameStatus();
       return;
     }
 
-    switchTurns();
+    _switchTurns();
   };
 
   return {
@@ -149,72 +162,59 @@ const gameplayController = (function(board, players) {
     getGameStatus,
     isGameStatePlaying,
     getActivePlayer,
-    getNextPlayer,
     playTurn,
   };
 })(gameBoard, playerList);
 
-/*
-  Takes in a one-dimensional list of markers on each gameboard grid cell.
+const displayController = function(gameplayController) {
+  const _gameBoard = gameplayController.board;
 
-  e.g.
-  ['X', 'O', ' ', ' ', ' ', ' ', ' ', 'X', 'O']
-    0    1    2    3    4    5    6    7    8
-
-  is equivalent to...
-
-    X | O |
-  -------------
-      |   |
-  -------------
-      | X | O
-*/
-const displayController = function(gameBoard) {
-  const render = function() {
+  const _getCells = function() {
     const rootContainer = document.querySelector('#game-board');
-    const cells = [...rootContainer.children];
+    return [...rootContainer.children];
+  }
 
-    cells.forEach((cell, index) => {
-      cell.textContent = gameBoard[index];
+  const render = function() {
+    const cells = _getCells();
+
+    cells.forEach((cell, cellIndex) => {
+      cell.textContent = _gameBoard.markerAt(cellIndex);
     });
   };
 
-  const markCellAsPlayed = function(cellIndex) {
-    const rootContainer = document.querySelector('#game-board');
-    const cells = [...rootContainer.children];
+  const _markCellAsPlayed = function(cellIndex) {
+    const cells = _getCells(); 
     
     cells[cellIndex].setAttribute('disabled', true);
   };
 
-  const updateGameStatus = function() {
+  const _updateGameStatus = function() {
     const gameStatusElement = document.querySelector('#game-status');
     gameStatusElement.textContent = gameplayController.getGameStatus();
   };
 
-  const disableBoard = function() {
+  const _disableBoard = function() {
     if (gameplayController.isGameStatePlaying()) return;
 
-    const rootContainer = document.querySelector('#game-board');
-    const cells = [...rootContainer.children];
+    const cells = _getCells(); 
 
-    cells.forEach((cell, cellIndex) => markCellAsPlayed(cellIndex));
+    cells.forEach((cell, cellIndex) => _markCellAsPlayed(cellIndex));
   };
 
-  const playTurn = function(cellIndex) {
+  const _playTurn = function(cellIndex) {
     gameplayController.playTurn(cellIndex);
-    markCellAsPlayed(cellIndex);
+    _markCellAsPlayed(cellIndex);
     render();
-    updateGameStatus();
-    disableBoard();
+    _updateGameStatus();
+    _disableBoard();
   };
 
   // IIFE to generate event listeners only once at time of initial load.
-  const tieCellsToClickActions = (function() {
-    const rootContainer = document.querySelector('#game-board');
-    const cells = [...rootContainer.children];
+  const _tieCellsToClickActions = (function() {
+    const cells = _getCells(); 
 
     cells.forEach((cell, index) => {
-      cell.addEventListener('click', playTurn.bind(this, index));
+      cell.addEventListener('click', _playTurn.bind(this, index));
     });
   })();
 
@@ -223,7 +223,7 @@ const displayController = function(gameBoard) {
   };
 };
 
-const cc = displayController(gameplayController.board.grid);
+const cc = displayController(gameplayController);
 cc.render();
 
 // console.log(gameplayController.board);
