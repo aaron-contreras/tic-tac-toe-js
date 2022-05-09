@@ -1,18 +1,25 @@
 console.log('Hello world🌊');
 
 const gameBoard = (() => {
+  const emptyCell = ' ';
+
   const grid = [
-    'A', 'T', '',
-    '',  '',  '',
-    '',  '',  '',
+    emptyCell, emptyCell, emptyCell,
+    emptyCell, emptyCell, emptyCell,
+    emptyCell, emptyCell, emptyCell,
   ];
 
-  const addMarkerAt = function(marker, cellIndex) {
+  const placeMarkerAt = function(marker, cellIndex) {
     grid[cellIndex] = marker;
   };
 
+  const isCellTaken = function(cellIndex) {
+    return grid[cellIndex] !== emptyCell;
+  }
+
   return {
-    placeMarkerAt: addMarkerAt,
+    placeMarkerAt,
+    isCellTaken,
     grid
   };
 })();
@@ -51,10 +58,11 @@ const gameplayController = (function(board, players) {
   };
 
   const playTurn = function(cellIndex) {
+    // Don't allow playing a turn on a cell that's already been played on.
+    if (board.isCellTaken(cellIndex)) return;
+
     const marker = activePlayer.marker;
-
     board.placeMarkerAt(marker, cellIndex);
-
     switchTurns();
   };
 
@@ -70,8 +78,8 @@ const gameplayController = (function(board, players) {
   Takes in a one-dimensional list of markers on each gameboard grid cell.
 
   e.g.
-  ['X', 'O', '', '', '', '', '', 'X', 'O']
-    0    1   2   3   4   5   6    7    8
+  ['X', 'O', ' ', ' ', ' ', ' ', ' ', 'X', 'O']
+    0    1    2    3    4    5    6    7    8
 
   is equivalent to...
 
