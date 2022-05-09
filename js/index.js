@@ -54,13 +54,14 @@ const gameplayController = (function(board, players) {
     const marker = activePlayer.marker;
 
     board.placeMarkerAt(marker, cellIndex);
+
+    switchTurns();
   };
 
   return {
     board,
     getActivePlayer,
     getNextPlayer,
-    switchTurns,
     playTurn,
   };
 })(gameBoard, playerList);
@@ -90,12 +91,27 @@ const displayController = function(gameBoard) {
     })
   };
 
+  const playTurn = function(cellIndex) {
+    gameplayController.playTurn(cellIndex);
+    render();
+  }
+
+  // IIFE to generate event listeners only once at time of initial load.
+  const tieCellsToClickActions = (function() {
+    const rootContainer = document.querySelector('#game-board');
+    const cells = [...rootContainer.children];
+
+    cells.forEach((cell, index) => {
+      cell.addEventListener('click', playTurn.bind(this, index));
+    });
+  })();
+
   return {
     render
   };
 };
 
-const cc = displayController(gameBoard.grid);
+const cc = displayController(gameplayController.board.grid);
 cc.render();
 
 // console.log(gameplayController.board);
