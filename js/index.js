@@ -99,9 +99,17 @@ const displayController = function(gameBoard) {
     })
   };
 
+  const markCellAsPlayed = function(cellIndex) {
+    const rootContainer = document.querySelector('#game-board');
+    const cells = [...rootContainer.children];
+    
+    cells[cellIndex].setAttribute('disabled', true);
+  };
+
   const playTurn = function(cellIndex) {
     gameplayController.playTurn(cellIndex);
     render();
+    markCellAsPlayed(cellIndex);
   }
 
   // IIFE to generate event listeners only once at time of initial load.
