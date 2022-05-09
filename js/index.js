@@ -2,7 +2,21 @@ console.log('Hello world🌊');
 
 const gameBoard = (() => {
   const _emptyCell = ' ';
+  /*
+    Holds a one-dimensional list of markers on each gameboard grid cell.
 
+    e.g.
+    ['X', 'O', ' ', ' ', ' ', ' ', ' ', 'X', 'O']
+      0    1    2    3    4    5    6    7    8
+
+    is equivalent to...
+
+      X | O |
+    -------------
+        |   |
+    -------------
+        | X | O
+  */
   const _grid = [
     _emptyCell, _emptyCell, _emptyCell,
     _emptyCell, _emptyCell, _emptyCell,
@@ -152,21 +166,7 @@ const gameplayController = (function(board, players) {
   };
 })(gameBoard, playerList);
 
-/*
-  Takes in a one-dimensional list of markers on each gameboard grid cell.
 
-  e.g.
-  ['X', 'O', ' ', ' ', ' ', ' ', ' ', 'X', 'O']
-    0    1    2    3    4    5    6    7    8
-
-  is equivalent to...
-
-    X | O |
-  -------------
-      |   |
-  -------------
-      | X | O
-*/
 const displayController = function(gameplayController) {
   const gameBoard = gameplayController.board;
 
