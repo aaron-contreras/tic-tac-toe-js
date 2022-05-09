@@ -7,7 +7,12 @@ const gameBoard = (() => {
     '',  '',  '',
   ];
 
+  const addMarkerAt = function(marker, cellIndex) {
+    grid[cellIndex] = marker;
+  };
+
   return {
+    placeMarkerAt: addMarkerAt,
     grid
   };
 })();
@@ -43,13 +48,20 @@ const gameplayController = (function(board, players) {
 
   const switchTurns = function() {
     activePlayer = getNextPlayer();
-  }
+  };
+
+  const playTurn = function(cellIndex) {
+    const marker = activePlayer.marker;
+
+    board.placeMarkerAt(marker, cellIndex);
+  };
 
   return {
     board,
     getActivePlayer,
     getNextPlayer,
     switchTurns,
+    playTurn,
   };
 })(gameBoard, playerList);
 
@@ -83,7 +95,8 @@ const displayController = function(gameBoard) {
   };
 };
 
-const cc = displayController(gameBoard.grid).render();
+const cc = displayController(gameBoard.grid);
+cc.render();
 
 // console.log(gameplayController.board);
 // console.log(gameplayController.getActivePlayer());
