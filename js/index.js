@@ -32,7 +32,6 @@ const gameBoard = (() => {
     placeMarkerAt,
     isCellTaken,
     isFull,
-    grid
   };
 })();
 
@@ -168,13 +167,15 @@ const gameplayController = (function(board, players) {
   -------------
       | X | O
 */
-const displayController = function(gameBoard) {
+const displayController = function(gameplayController) {
+  const gameBoard = gameplayController.board;
+
   const render = function() {
     const rootContainer = document.querySelector('#game-board');
     const cells = [...rootContainer.children];
 
-    cells.forEach((cell, index) => {
-      cell.textContent = gameBoard[index];
+    cells.forEach((cell, cellIndex) => {
+      cell.textContent = gameBoard.markerAt(cellIndex);
     });
   };
 
@@ -222,7 +223,7 @@ const displayController = function(gameBoard) {
   };
 };
 
-const cc = displayController(gameplayController.board.grid);
+const cc = displayController(gameplayController);
 cc.render();
 
 // console.log(gameplayController.board);
