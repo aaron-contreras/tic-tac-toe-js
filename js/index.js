@@ -1,29 +1,29 @@
 console.log('Hello world🌊');
 
 const gameBoard = (() => {
-  const emptyCell = ' ';
+  const _emptyCell = ' ';
 
-  const grid = [
-    emptyCell, emptyCell, emptyCell,
-    emptyCell, emptyCell, emptyCell,
-    emptyCell, emptyCell, emptyCell,
+  const _grid = [
+    _emptyCell, _emptyCell, _emptyCell,
+    _emptyCell, _emptyCell, _emptyCell,
+    _emptyCell, _emptyCell, _emptyCell,
   ];
 
   const placeMarkerAt = function(marker, cellIndex) {
-    grid[cellIndex] = marker;
+    _grid[cellIndex] = marker;
   };
 
   const isCellTaken = function(cellIndex) {
-    return grid[cellIndex] !== emptyCell;
+    return _grid[cellIndex] !== _emptyCell;
   };
 
   const markerAt = function(cellIndex) {
-    return grid[cellIndex];
+    return _grid[cellIndex];
   };
 
   const isFull = function() {
-    return !grid.some(cell => {
-      return cell === emptyCell;
+    return !_grid.some(cell => {
+      return cell === _emptyCell;
     });
   }
 
