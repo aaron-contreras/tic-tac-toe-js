@@ -39,13 +39,20 @@ const gameBoard = (() => {
     return !_grid.some(cell => {
       return cell === _emptyCell;
     });
-  }
+  };
+
+  const clear = function() {
+    _grid.forEach((_cell, cellIndex) => {
+      _grid[cellIndex] = _emptyCell;
+    });
+  };
 
   return {
     markerAt,
     placeMarkerAt,
     isCellTaken,
     isFull,
+    clear
   };
 })();
 
@@ -56,12 +63,7 @@ const createPlayer = function(name, marker) {
   };
 };
 
-const playerOne = createPlayer('Aaron', 'A');
-const playerTwo = createPlayer('Thamara', 'T');
-
-const playerList = [playerOne, playerTwo];
-
-const gameplayController = (function(board, players) {
+const gameplayController = function(board, players) {
 
   // Player one starts off the game
   let activePlayer = players[0]; 
@@ -83,6 +85,7 @@ const gameplayController = (function(board, players) {
   ];
 
   const _gameStates = {
+    ready: 'ready',
     playing: 'playing',
     tie: 'tie',
     win: 'win'
@@ -157,29 +160,95 @@ const gameplayController = (function(board, players) {
     _switchTurns();
   };
 
+  const reset = function() {
+    gameStatus = _gameStates['ready'];
+    board.clear();
+  }
+
   return {
     board,
     getGameStatus,
     isGameStatePlaying,
+    isWin,
     getActivePlayer,
     playTurn,
+    reset
   };
-})(gameBoard, playerList);
+};
 
-const displayController = function(gameplayController) {
-  const _gameBoard = gameplayController.board;
+const displayController = (function() {
+  let _activeGame;
 
   const _getCells = function() {
     const rootContainer = document.querySelector('#game-board');
     return [...rootContainer.children];
-  }
+  };
+
+  const _getGameBoard = function() {
+    return _activeGame.board;
+  };
 
   const render = function() {
     const cells = _getCells();
 
     cells.forEach((cell, cellIndex) => {
-      cell.textContent = _gameBoard.markerAt(cellIndex);
+      cell.textContent = _getGameBoard().markerAt(cellIndex);
     });
+
+    _updateGameStatus();
+    _displayWinStatus();
+    _disableBoard();
+  };
+
+  const _displayWinStatus = function() {
+    if (_activeGame.isWin()) {
+      const winnerElement = document.querySelector('#winner');
+
+      winnerElement.textContent = _activeGame.getActivePlayer().name;
+    }
+  };
+
+  const _getPlayerNames = function() {
+    const playerOneName = document.querySelector('#player-one-name').value;
+    const playerTwoName = document.querySelector('#player-two-name').value;
+
+    return [playerOneName, playerTwoName];
+  }
+
+  const _getPlayerList = function() {
+    const playerNames = _getPlayerNames();
+    const playerOne = createPlayer(playerNames[0], 'X');
+    const playerTwo = createPlayer(playerNames[1], 'O');
+
+    return [playerOne, playerTwo];
+  }
+
+  const _resetCellStates = function() {
+    const cells = _getCells(); 
+    
+    cells.forEach(cell => {
+      cell.removeAttribute('disabled');
+    });
+  };
+
+  const _toggleStartButtonText = function() {
+    const startButton = document.querySelector('#start-game');
+    startButton.textContent = 'Restart';
+  };
+
+  const _startGame = function() {
+    _toggleStartButtonText();
+    // Get new player list
+    const playerList = _getPlayerList();
+
+    // Create a new game
+    _activeGame = gameplayController(gameBoard, playerList);
+
+    // Clear out board
+    _getGameBoard().clear();
+    _resetCellStates();
+
+    render();
   };
 
   const _markCellAsPlayed = function(cellIndex) {
@@ -190,11 +259,11 @@ const displayController = function(gameplayController) {
 
   const _updateGameStatus = function() {
     const gameStatusElement = document.querySelector('#game-status');
-    gameStatusElement.textContent = gameplayController.getGameStatus();
+    gameStatusElement.textContent = _activeGame.getGameStatus();
   };
 
   const _disableBoard = function() {
-    if (gameplayController.isGameStatePlaying()) return;
+    if (_activeGame.isGameStatePlaying()) return;
 
     const cells = _getCells(); 
 
@@ -202,11 +271,9 @@ const displayController = function(gameplayController) {
   };
 
   const _playTurn = function(cellIndex) {
-    gameplayController.playTurn(cellIndex);
+    _activeGame.playTurn(cellIndex);
     _markCellAsPlayed(cellIndex);
     render();
-    _updateGameStatus();
-    _disableBoard();
   };
 
   // IIFE to generate event listeners only once at time of initial load.
@@ -218,13 +285,19 @@ const displayController = function(gameplayController) {
     });
   })();
 
+  const _tieStartButtonToGameplay = (function() {
+    const startButton = document.querySelector('#start-game');
+
+    startButton.addEventListener('click', _startGame);
+  })();
+
   return {
     render
   };
-};
+})();
 
-const cc = displayController(gameplayController);
-cc.render();
+// const cc = displayController();
+// cc.render();
 
 // console.log(gameplayController.board);
 // console.log(gameplayController.getActivePlayer());
