@@ -17,6 +17,7 @@ h1, h2, h3, h4, h5, h6 {
 body {
   padding: 2rem 0;
   min-height: calc(100vh - 2rem * 2);
+  height: calc(100vh - 2rem * 2);
   background-color: var(--base-color);
 }
 
@@ -60,6 +61,17 @@ body {
   grid-template-columns: 1fr 1fr;
   grid-template-rows: repeat(2, 40px);
   gap: 1rem;
+  padding: 1rem 0;
+}
+
+.form-control label {
+  padding-right: 1rem;
+}
+
+.form-control input {
+  border: none;
+  border-radius: 1rem;
+  padding: 0.5rem 1rem;
 }
 
 .player-data-form .start-button {
@@ -74,6 +86,10 @@ body {
   margin: 0 auto;
   max-width: 800px;
   height: 100%;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 header {
@@ -82,6 +98,7 @@ header {
   flex: 1;
   height: 200px;
   margin-bottom: 3rem;
+  text-transform: uppercase;
 }
 
 .game-status {
@@ -91,4 +108,9 @@ header {
 
 footer {
   text-align: end;
+}
+
+footer a {
+  text-decoration: none;
+  color: var(--primary-color);
 }

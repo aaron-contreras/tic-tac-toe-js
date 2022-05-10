@@ -13,37 +13,41 @@
 </head>
 <body>
   <div class="container">
-    <header>
-      <h1 class="title">Tic-Tac-Toe</h1>
-      <section class="player-data-form">
-        <div class="form-control">
-          <label for="player-one-name">Player one's name</label>
-          <input type="text" id="player-one-name" name="player-one-name">
-        </div>
-        <div class="form-control">
-          <label for="player-one-name">Player two's name</label>
-          <input type="text" id="player-two-name" name="player-two-name">
-        </div>
-        <button class="button start-button" id="start-game">Start Game</button>
-      </section>
-      <section class="game-status">
-        <em id="winner"></em>
-      </section>
-    </header>
-    <main class="game-board-container" id="game-board">
-      <button class="cell"></button>
-      <button class="cell"></button>
-      <button class="cell"></button>
-      <button class="cell"></button>
-      <button class="cell"></button>
-      <button class="cell"></button>
-      <button class="cell"></button>
-      <button class="cell"></button>
-      <button class="cell"></button>
-    </main>
-    <footer>
-      <span>Built by <a href="https://github.com/aaron-contreras">Aaron Contreras</a></span>
-    </footer>
+    <div class="top">
+      <header>
+        <h1 class="title">Tic-Tac-Toe</h1>
+        <section class="player-data-form">
+          <div class="form-control">
+            <label for="player-one-name">Player one's name</label>
+            <input type="text" id="player-one-name" name="player-one-name">
+          </div>
+          <div class="form-control">
+            <label for="player-one-name">Player two's name</label>
+            <input type="text" id="player-two-name" name="player-two-name">
+          </div>
+          <button class="button start-button" id="start-game">Start Game</button>
+        </section>
+        <section class="game-status">
+          <em id="winner"></em>
+        </section>
+      </header>
+      <main class="game-board-container" id="game-board">
+        <button class="cell"></button>
+        <button class="cell"></button>
+        <button class="cell"></button>
+        <button class="cell"></button>
+        <button class="cell"></button>
+        <button class="cell"></button>
+        <button class="cell"></button>
+        <button class="cell"></button>
+        <button class="cell"></button>
+      </main>
+    </div>
+    <div class="bottom">
+      <footer>
+        <span>Built by <a href="https://github.com/aaron-contreras" target="_blank">Aaron Contreras</a></span>
+      </footer>
+    </div>
   </div>
   <script src="./js/index.js"></script>
 </body>
