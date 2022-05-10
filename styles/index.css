@@ -1,9 +1,23 @@
 :root {
   --game-board-width: 50vh;
+
+  --base-color: #f0f0f0;
+  --dark-color: #494947;
+  --primary-color: #6BBAEC;
+  --darkened-primary-color: #5da5d2;
+
+  --font-family: 'Roboto', sans-serif;
+  font-family: var(--font-family);
 }
 
-p {
-  font-weight: bold;
+h1, h2, h3, h4, h5, h6 {
+  margin: 0;
+}
+
+body {
+  padding: 2rem 0;
+  min-height: calc(100vh - 2rem * 2);
+  background-color: var(--base-color);
 }
 
 .game-board-container {
@@ -13,4 +27,68 @@ p {
 
   display: grid;
   grid-template: repeat(3, 1fr) / repeat(3, 1fr);
+  gap: 0.5rem;
+
+  background-color: var(--dark-color);
+}
+
+.game-board-container .cell {
+  border: none;
+  background-color: var(--primary-color);
+
+  font-size: 3rem;
+  font-weight: 900;
+}
+
+.game-board-container .cell:hover {
+  cursor: pointer;
+  background-color: var(--darkened-primary-color);
+}
+
+.game-board-container .cell:disabled {
+  cursor: default;
+  background-color: var(--primary-color);
+  color: var(--dark-color);
+}
+
+.title {
+  text-align: center;
+}
+
+.player-data-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: repeat(2, 40px);
+  gap: 1rem;
+}
+
+.player-data-form .start-button {
+  grid-column: 1 / span 2;
+  background-color: var(--primary-color);
+  font-weight: bold;
+  border: none;
+  border-radius: 1rem;
+}
+
+.container {
+  margin: 0 auto;
+  max-width: 800px;
+  height: 100%;
+}
+
+header {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  height: 200px;
+  margin-bottom: 3rem;
+}
+
+.game-status {
+  text-align: center;
+  font-size: 3rem;
+}
+
+footer {
+  text-align: end;
 }
