@@ -6,35 +6,45 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="./styles/normalize.css">
   <link rel="stylesheet" href="./styles/index.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700;900&display=swap" rel="stylesheet">
   <title>Tic Tac Toe</title>
 </head>
 <body>
-  <p>Hello world🌊</p>
-
-  <section class="player-data-form">
-    <label for="player-one-name">Player one's name</label>
-    <input type="text" id="player-one-name" name="player-one-name">
-
-    <label for="player-one-name">Player two's name</label>
-    <input type="text" id="player-two-name" name="player-two-name">
-
-    <button class="button start-button" id="start-game">Start Game</button>
-  </section>
-
-  <em id="winner"></em>
-
-  <em id="game-status"></em>
-  <main class="game-board-container" id="game-board">
-    <button class="cell"></button>
-    <button class="cell"></button>
-    <button class="cell"></button>
-    <button class="cell"></button>
-    <button class="cell"></button>
-    <button class="cell"></button>
-    <button class="cell"></button>
-    <button class="cell"></button>
-    <button class="cell"></button>
-  </main>
+  <div class="container">
+    <header>
+      <h1 class="title">Tic-Tac-Toe</h1>
+      <section class="player-data-form">
+        <div class="form-control">
+          <label for="player-one-name">Player one's name</label>
+          <input type="text" id="player-one-name" name="player-one-name">
+        </div>
+        <div class="form-control">
+          <label for="player-one-name">Player two's name</label>
+          <input type="text" id="player-two-name" name="player-two-name">
+        </div>
+        <button class="button start-button" id="start-game">Start Game</button>
+      </section>
+      <section class="game-status">
+        <em id="winner"></em>
+      </section>
+    </header>
+    <main class="game-board-container" id="game-board">
+      <button class="cell"></button>
+      <button class="cell"></button>
+      <button class="cell"></button>
+      <button class="cell"></button>
+      <button class="cell"></button>
+      <button class="cell"></button>
+      <button class="cell"></button>
+      <button class="cell"></button>
+      <button class="cell"></button>
+    </main>
+    <footer>
+      <span>Built by <a href="https://github.com/aaron-contreras">Aaron Contreras</a></span>
+    </footer>
+  </div>
   <script src="./js/index.js"></script>
 </body>
 </html>

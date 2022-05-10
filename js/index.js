@@ -195,17 +195,20 @@ const displayController = (function() {
       cell.textContent = _getGameBoard().markerAt(cellIndex);
     });
 
-    _updateGameStatus();
     _displayWinStatus();
     _disableBoard();
   };
 
   const _displayWinStatus = function() {
-    if (_activeGame.isWin()) {
-      const winnerElement = document.querySelector('#winner');
+    const winnerElement = document.querySelector('#winner');
 
-      winnerElement.textContent = _activeGame.getActivePlayer().name;
-    }
+    if (_activeGame.isWin()) {
+
+      winnerElement.textContent = `${_activeGame.getActivePlayer().name} wins`;
+      return;
+    };
+
+    winnerElement.textContent = '';
   };
 
   const _getPlayerNames = function() {
@@ -255,11 +258,6 @@ const displayController = (function() {
     const cells = _getCells(); 
     
     cells[cellIndex].setAttribute('disabled', true);
-  };
-
-  const _updateGameStatus = function() {
-    const gameStatusElement = document.querySelector('#game-status');
-    gameStatusElement.textContent = _activeGame.getGameStatus();
   };
 
   const _disableBoard = function() {
